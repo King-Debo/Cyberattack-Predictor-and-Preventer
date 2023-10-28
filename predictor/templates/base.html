@@ -1,0 +1,290 @@
+<!-- Step 6: Use bootstrap and jQuery libraries to design and implement a user interface that is interactive, responsive, and user-friendly. -->
+
+<!-- Import the bootstrap and jQuery libraries -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Create a navbar with the website title and a login button -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">Cyberattack Predictor</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Create a container for the dashboard content -->
+<div class="container mt-4">
+  <!-- Create a row for the title and the prediction button -->
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Cyberattack Dashboard</h1>
+      <p>Here you can see the latest information on the types, sources, targets, and impacts of cyberattacks in different countries and regions.</p>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-primary btn-lg" id="predict-btn">Predict Future Trends and Risks</button>
+    </div>
+  </div>
+
+  <!-- Create a row for the charts and graphs -->
+  <div class="row mt-4">
+    <!-- Create a column for the bar chart of the number of attacks per country -->
+    <div class="col-md-6">
+      <h3>Number of cyberattacks per country</h3>
+      <canvas id="country-chart"></canvas>
+    </div>
+
+    <!-- Create a column for the pie chart of the number of attacks per type -->
+    <div class="col-md-6">
+      <h3>Number of cyberattacks per type</h3>
+      <canvas id="type-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- Create a row for the line chart of the number of attacks per month -->
+  <div class="row mt-4">
+    <!-- Create a column for the line chart of the number of attacks per month -->
+    <div class="col-md-12">
+      <h3>Number of cyberattacks per month</h3>
+      <canvas id="month-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- Create a row for the scatter plot of the actual vs predicted impact scores -->
+  <div class="row mt-4">
+    <!-- Create a column for the scatter plot of the actual vs predicted impact scores -->
+    <div class="col-md-12">
+      <h3>Actual vs predicted impact scores</h3>
+      <canvas id="impact-chart"></canvas>
+    </div>
+  </div>
+
+  <!-- Create a row for the heatmap of the confusion matrix -->
+  <div class="row mt-4">
+    <!-- Create a column for the heatmap of the confusion matrix -->
+    <div class="col-md-12">
+      <h3>Confusion matrix</h3>
+      <canvas id="confusion-chart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- Import the chart.js library for creating charts and graphs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+
+<!-- Write some custom JavaScript code to render the charts and graphs using the data from the database and the prediction model -->
+<script>
+    // Get the data from the database using an AJAX request
+    $.ajax({
+      url: "/data",
+      method: "GET",
+      dataType: "json",
+      success: function(data) {
+        // Get the elements for each chart
+        var countryChart = document.getElementById("country-chart").getContext("2d");
+        var typeChart = document.getElementById("type-chart").getContext("2d");
+        var monthChart = document.getElementById("month-chart").getContext("2d");
+        var impactChart = document.getElementById("impact-chart").getContext("2d");
+        var confusionChart = document.getElementById("confusion-chart").getContext("2d");
+  
+        // Create the bar chart of the number of attacks per country
+        var countryBarChart = new Chart(countryChart, {
+          type: "bar",
+          data: {
+            labels: data.country_counts.index,
+            datasets: [{
+              label: "Count",
+              data: data.country_counts.values,
+              backgroundColor: "rgba(0, 0, 255, 0.5)",
+              borderColor: "rgba(0, 0, 255, 1)",
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }
+        });
+  
+        // Create the pie chart of the number of attacks per type
+        var typePieChart = new Chart(typeChart, {
+          type: "pie",
+          data: {
+            labels: data.type_counts.index,
+            datasets: [{
+              label: "Count",
+              data: data.type_counts.values,
+              backgroundColor: ["rgba(255, 0, 0, 0.5)", "rgba(0, 255, 0, 0.5)", "rgba(0, 0, 255, 0.5)", "rgba(255, 255, 0, 0.5)", "rgba(255, 0, 255, 0.5)"],
+              borderColor: ["rgba(255, 0, 0, 1)", "rgba(0, 255, 0, 1)", "rgba(0, 0, 255, 1)", "rgba(255, 255, 0, 1)", "rgba(255, 0, 255, 1)"],
+              borderWidth: 1
+            }]
+          },
+          options: {}
+        });
+  
+        // Create the line chart of the number of attacks per month
+        var monthLineChart = new Chart(monthChart, {
+          type: "line",
+          data: {
+            labels: data.month_counts.index,
+            datasets: [{
+              label: "Count",
+              data: data.month_counts.values,
+              backgroundColor: "rgba(0, 255, 0, 0.5)",
+              borderColor: "rgba(0, 255, 0, 1)",
+              borderWidth: 1,
+              fill: false
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }
+        });
+  
+        // Create the scatter plot of the actual vs predicted impact scores
+        var impactScatterPlot = new Chart(impactChart, {
+          type: "scatter",
+          data: {
+            datasets: [{
+              label: "Impact",
+              data: data.impact_data,
+              backgroundColor: "rgba(255, 0, 255, 0.5)",
+              borderColor: "rgba(255, 0, 255, 1)",
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              xAxes: [{
+                type: 'linear',
+                position: 'bottom',
+                ticks:{
+                  min :1,
+                  max :5
+                }
+              }],
+              yAxes:[{
+                ticks:{
+                  min :1,
+                  max :5
+                }
+              }]
+            }
+          }
+        });
+  
+        // Create the heatmap of the confusion matrix
+        var confusionHeatmap = new Chart(confusionChart,{
+          type:"matrix",
+          data:{
+            datasets:[{
+              label:"Confusion matrix",
+              data:data.confusion_data,
+              backgroundColor:function(context){
+                var value = context.dataset.data[context.dataIndex].v;
+                var alpha = (value - context.dataset.min) / (context.dataset.max - context.dataset.min);
+                return Color('red').alpha(alpha).rgbString();
+              },
+              borderWidth :1
+            }]
+          },
+          options:{
+            scales:{
+               xAxes:[{
+                 type:'category',
+                 position:'top',
+                 offset:true,
+                 gridLines:{
+                   offsetGridLines:true
+                 }
+               }],
+               yAxes:[{
+                 type:'category',
+                 position:'left',
+                 offset:true,
+                 gridLines:{
+                   offsetGridLines:true
+                 }
+               }]
+             }
+           }
+         });
+      },
+      error:function(error){
+        console.log(error);
+      }
+     });
+  
+// Add a click event listener to the prediction button
+$("#predict-btn").click(function(){
+  // Get the prediction data from the model using an AJAX request
+  $.ajax({
+    url:"/predict",
+    method:"GET",
+    dataType:"json",
+    success:function(data){
+      // Display the prediction data in the result div
+      $("#result").html(`
+        <h3>Prediction result</h3>
+        <p>The predicted impact score for your input is ${data.prediction}.</p>
+        <p>The higher the score, the more severe the impact of the cyberattack.</p>
+        <p>The score ranges from 1 (low) to 5 (high).</p>
+      `);
+    },
+    error:function(error){
+      // Display an error message in the result div
+      $("#result").html(`
+        <h3>Prediction error</h3>
+        <p>Sorry, something went wrong. Please try again later.</p>
+      `);
+    }
+  });
+});
+
+// Add a click event listener to the prevention button
+$("#prevention-btn").click(function(){
+  // Get the prevention data from the database using an AJAX request
+  $.ajax({
+    url:"/prevention",
+    method:"GET",
+    dataType:"json",
+    success:function(data){
+      // Display the prevention data in the result div
+      $("#result").html(`
+        <h3>Prevention tips</h3>
+        <p>Here are some tips and best practices to enhance your cybersecurity and avoid becoming a victim of cyberattacks:</p>
+        <ul>
+          ${data.tips.map(tip => `<li>${tip}</li>`).join("")}
+        </ul>
+      `);
+    },
+    error:function(error){
+      // Display an error message in the result div
+      $("#result").html(`
+        <h3>Prevention error</h3>
+        <p>Sorry, something went wrong. Please try again later.</p>
+      `);
+    }
+  });
+});
