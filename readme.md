@@ -56,7 +56,7 @@ This project is licensed under MIT License.
 
 ## Contact
 
-If you have any questions or feedback about this project, please feel free to contact me at your_email@domain.com.
+If you have any questions or feedback about this project, please feel free to contact me at artificialdialogue@gmail.com.
 
 ## Acknowledgements
 
