@@ -236,55 +236,55 @@
       }
      });
   
-// Add a click event listener to the prediction button
-$("#predict-btn").click(function(){
-  // Get the prediction data from the model using an AJAX request
-  $.ajax({
-    url:"/predict",
-    method:"GET",
-    dataType:"json",
-    success:function(data){
-      // Display the prediction data in the result div
-      $("#result").html(`
-        <h3>Prediction result</h3>
-        <p>The predicted impact score for your input is ${data.prediction}.</p>
-        <p>The higher the score, the more severe the impact of the cyberattack.</p>
-        <p>The score ranges from 1 (low) to 5 (high).</p>
-      `);
-    },
-    error:function(error){
-      // Display an error message in the result div
-      $("#result").html(`
-        <h3>Prediction error</h3>
-        <p>Sorry, something went wrong. Please try again later.</p>
-      `);
-    }
-  });
-});
+   // Add a click event listener to the prediction button
+   $("#predict-btn").click(function(){
+     // Get the prediction data from the model using an AJAX request
+     $.ajax({
+       url:"/predict",
+       method:"GET",
+       dataType:"json",
+       success:function(data){
+         // Display the prediction data in the result div
+         $("#result").html(`
+           <h3>Prediction result</h3>
+           <p>The predicted impact score for your input is ${data.prediction}.</p>
+           <p>The higher the score, the more severe the impact of the cyberattack.</p>
+           <p>The score ranges from 1 (low) to 5 (high).</p>
+         `);
+       },
+       error:function(error){
+         // Display an error message in the result div
+         $("#result").html(`
+           <h3>Prediction error</h3>
+           <p>Sorry, something went wrong. Please try again later.</p>
+         `);
+       }
+     });
+   });
 
-// Add a click event listener to the prevention button
-$("#prevention-btn").click(function(){
-  // Get the prevention data from the database using an AJAX request
-  $.ajax({
-    url:"/prevention",
-    method:"GET",
-    dataType:"json",
-    success:function(data){
-      // Display the prevention data in the result div
-      $("#result").html(`
-        <h3>Prevention tips</h3>
-        <p>Here are some tips and best practices to enhance your cybersecurity and avoid becoming a victim of cyberattacks:</p>
-        <ul>
-          ${data.tips.map(tip => `<li>${tip}</li>`).join("")}
-        </ul>
-      `);
-    },
-    error:function(error){
-      // Display an error message in the result div
-      $("#result").html(`
-        <h3>Prevention error</h3>
-        <p>Sorry, something went wrong. Please try again later.</p>
-      `);
-    }
-  });
-});
+   // Add a click event listener to the prevention button
+   $("#prevention-btn").click(function(){
+     // Get the prevention data from the database using an AJAX request
+     $.ajax({
+       url:"/prevention",
+       method:"GET",
+       dataType:"json",
+       success:function(data){
+         // Display the prevention data in the result div
+         $("#result").html(`
+           <h3>Prevention tips</h3>
+           <p>Here are some tips and best practices to enhance your cybersecurity and avoid becoming a victim of cyberattacks:</p>
+           <ul>
+             ${data.tips.map(tip => `<li>${tip}</li>`).join("")}
+           </ul>
+         `);
+       },
+       error:function(error){
+         // Display an error message in the result div
+         $("#result").html(`
+           <h3>Prevention error</h3>
+           <p>Sorry, something went wrong. Please try again later.</p>
+         `);
+       }
+     });
+   });
